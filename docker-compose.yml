@@ -1,0 +1,39 @@
+services:
+  postgresql:
+    hostname: postgresql
+    image: postgres:16-alpine3.20
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_DATABASE}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - keycloak-data:/var/lib/postgresql/data
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    restart: always
+    command: start-dev
+    ports:
+      - "80:80"
+      - "8080:8080"
+      - "8443:8443"
+      - "9000:9000"
+    depends_on:
+      - postgresql
+    environment:
+      - KEYCLOAK_ADMIN=${ADMIN_USERNAME}
+      - KEYCLOAK_ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - KC_DB=${DB_DRIVER}
+      - KC_DB_PASSWORD=${DB_PASSWORD}
+      - KC_DB_URL_DATABASE=${DB_DATABASE}
+      - KC_DB_URL_HOST=${DB_HOST}
+      - KC_DB_URL_PORT=${DB_PORT}
+      - KC_DB_USERNAME=${DB_USER}
+      - KC_HOSTNAME=${HOSTNAME}
+      - KC_HOSTNAME_STRICT=${HOSTNAME_STRICT}
+      - KC_HTTP_ENABLED=${HTTP_ENABLED}
+      - KC_HEALTH_ENABLED=true
+      - KC_METRICS_ENABLED=true
+
+volumes:
+  keycloak-data:

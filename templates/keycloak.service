@@ -1,0 +1,20 @@
+[Unit]
+Description=Keycloak Service for Identity Management
+Documentation=https://docs.docker.com/compose/
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory={{WORKDIR}}
+TimeoutStartSec=0
+Restart=on-failure
+User={{USER}}
+Group=docker
+ExecStart={{WORKDIR}}/bin/start-service.sh
+ExecStop={{WORKDIR}}/bin/stop-service.sh
+ExecReload={{WORKDIR}}/bin/reload-service.sh
+
+[Install]
+WantedBy=multi-user.target
